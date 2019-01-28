@@ -15,3 +15,5 @@ To deploy the script for your own, login [G Suite Developer Hub](https://script.
 For configuration, refer to the top of the code.  The script can be configured to find emails by labels.  You can also set the Google Sheets file name for storing the data. If no such Sheet exists, a new one will be created.
 
 The first time you run the script, you will be prompted to grant OAuth access rights as it needs to access your Gmail, Google Drive, and Google Sheets.
+
+On G Suite Developer Hub, you can set up triggers to run the script periodically.
