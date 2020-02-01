@@ -39,7 +39,7 @@ var SPREADSHEET_NAME = 'Credit Card Transactions';
 // Regular expressions to process PC Financial MasterCard
 var REGEXP_PC_CARD_NUMBER = /Card number: \*+([0-9]+)/;
 var REGEXP_PC_MERCHANT = /Merchant: (.+)/;
-var REGEXP_PC_AMOUNT = /Purchase amount: (\$[0-9\.,]+)/;
+var REGEXP_PC_AMOUNT = /Purchase amount: (\-?\$[0-9\.,]+)/;
 var REGEXP_PC_TRANSACTION_DATE = /Transaction date: ([a-zA-Z0-9 ,]+)/;
 var REGEXP_PC_AVAILABLE_CREDIT = /Available credit: (\$[0-9\.,]+)/;
 
@@ -51,7 +51,7 @@ function main() {
   var labelObjs = getGmailLabels(GMAIL_LABELS);
   var ss = getSpreadsheet();
   var sheet = ss.getSheets()[0];
-  
+
   for(var i=0; i < labelObjs.length; i++) {
     var threads = getUnprocessedThreads(labelObjs[i]);
     for(var j=threads.length-1; j>=0; j--) {
@@ -71,7 +71,7 @@ function getGmailLabels(labels) {
   for(var i=0; i < labels.length; i++){
     result.push(GmailApp.getUserLabelByName(labels[i]));
   }
-  
+
   return result;
 }
 
@@ -87,7 +87,7 @@ function getUnprocessedThreads(label, sheet) {
   var perrun = 50; //maximum is 500
   var threads;
   var result = [];
-  
+
   do {
     threads = label.getThreads(from, perrun);
     from += perrun;
@@ -98,7 +98,7 @@ function getUnprocessedThreads(label, sheet) {
       }
     }
   } while (threads.length > 0);
-  
+
   Logger.log(result.length + ' threads to process in ' + label.getName());
   return result;
 }
@@ -122,7 +122,7 @@ function processThread(thread, sheet) {
       Logger.log(xact);
       addTransaction(sheet, xact);
     }
-    
+
     // mark the message as processed by removing the star
     message.unstar();
   }
@@ -140,7 +140,7 @@ function processPCMessage(message) {
   var amount = REGEXP_PC_AMOUNT.exec(message);
   var transactionDate = REGEXP_PC_TRANSACTION_DATE.exec(message);
   var availableCredit = REGEXP_PC_AVAILABLE_CREDIT.exec(message);
-  
+
   return {
     cardNumber: cardNumber? cardNumber[1] : null,
     merchant: merchant? merchant[1].trim() : null,
